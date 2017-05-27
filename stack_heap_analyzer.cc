@@ -2,10 +2,11 @@
 // program.
 //
 // It hooks into init_array to initialize, and hooks into fini_array to
-// calculate stack/heap usage.
+// calculate stack/heap usage. If no fini_array linkage, then add the 
+// exit function as last line in main().
 //
 // Requires that the program not run indefinitely (must exit busy loop)
-// so that the fini_array exit calls exit_check()
+// so that the fini_array exit calls exit_check().
 //
 // This assumes following setup:
 //     - stack at end of RAM and grows downward
@@ -17,11 +18,6 @@
 
 #include <stdlib.h>
 #include <stdint.h>
-
-#ifndef QEMU_STACK_BASE
-// Qemu by default set stack base to 0x8000000 by semihosting
-#define QEMU_STACK_BASE 0x8000000
-#endif
 
 // Define this with a function name so that you can set breakpoint to know if
 // stack/heap overrun (function prototype: void Function(void))
